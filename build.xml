@@ -1,0 +1,47 @@
+<?xml version="1.0" ?> 
+<project name="RHEx OAuth2 Server" default="war">
+  
+	<property name="tomcat.home" value="/Developer/Java/apache-tomcat-7.0.29" />
+	<property name="build" value="build/classes" />
+	<property name="war.file" value="dist/rhex-oauth2-server.war" />
+	<property name="web" value="WebContent" />
+	<property name="lib" value="${web}/WEB-INF/lib" />
+	
+	<path id="compile.classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar"/>
+		</fileset>
+    <fileset dir="${tomcat.home}/lib">
+      <include name="*.jar"/>
+    </fileset>
+	</path>
+	
+	<target name="init">
+		<mkdir dir="${build}"/>
+		<mkdir dir="dist" />
+	</target>
+	
+	<target name="compile" depends="init" >
+		<javac destdir="${build}" debug="true" srcdir="src">
+			<classpath refid="compile.classpath"/>
+		</javac>
+	</target>
+	
+	<target name="war" depends="compile">
+		<war destfile="${war.file}" webxml="${web}/WEB-INF/web.xml">
+			<fileset dir="${web}"/>
+			<lib dir="${lib}"/>
+			<classes dir="${build}"/>
+		</war>
+	</target>
+	
+	<target name="deploy" depends="war">
+	  <copy file="${war.file}" todir="${tomcat.home}/webapps"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="dist" />
+		<delete dir="build" />
+	</target>
+	
+</project>
